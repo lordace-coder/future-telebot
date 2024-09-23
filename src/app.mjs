@@ -73,9 +73,7 @@ app.get("/", async (req, res) => {
 
 // Start the server
 
-if (!debug) {
-  app.listen(1000, async () => {
-    // Set webhook URL dynamically using ngrok or other tunneling services
-    console.log("app running on http://localhost:" + PORT);
-  });
-}
+app.listen(1000, async () => {
+  // Set webhook URL dynamically using ngrok or other tunneling services
+  console.log("app running on http://localhost:");
+});
