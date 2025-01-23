@@ -1,5 +1,6 @@
 import { Telegraf, Markup } from "telegraf";
 import express from "express";
+import { createNewInvestmentPlan } from "./requests.mjs";
 
 const app = express();
 app.use(express.json());
@@ -71,9 +72,31 @@ app.get("/", async (req, res) => {
     `);
 });
 
+// WEBHOOK FOR INVESTMENT SITE
+// ! ZENITH INVESTMENT SITE
+app.post("/zenith", async (req, res) => {
+  try {
+    // update backend to handle users investment
+    const data = req.body;
+    if (data.event.type === "charge:confirmed") {
+      // Create new user Investment Plan on the pocketbase backend
+      const params = data.event.data.metadata;
+
+      await createNewInvestmentPlan(
+        params.userId,
+        params.investmentId,
+        data.event.data.pricing.local.amount
+      );
+    }
+    return res.status(200).send("OK");
+  } catch (error) {
+    return res.status(500).send("Error " + error);
+  }
+});
+
 // Start the server
 
 app.listen(1000, async () => {
   // Set webhook URL dynamically using ngrok or other tunneling services
-  console.log("app running on http://localhost:");
+  console.log("app running on port 1000");
 });
